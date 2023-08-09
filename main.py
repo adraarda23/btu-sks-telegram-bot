@@ -8,6 +8,7 @@ import getmenu
 import scrape
 import os
 import time
+import sksduyuru
 
 calculatedNextYearDate = datetime.datetime.now().year
 calculatedNextMonthDate = datetime.datetime.now().month
@@ -23,7 +24,7 @@ except:
   scrape.ScrapeMenu().getPdf()
   scrape.ScrapeMenu().convertPdfToCsv()
   menuList, date = getmenu.Menu().getFormattedMenu()
-Token = "TOKEN"
+Token = "6668916859:AAFHAe4PnuZVyicMhjhD7deEu9RV6xpCYYc"
 
 models = Models()
 models.create_table()
@@ -31,6 +32,7 @@ models.create_table()
 updater = telegram.ext.Updater(Token, use_context=True)
 dispatcher = updater.dispatcher
 j = updater.job_queue
+
 
 
 def restartEveryMonth(context: CallbackContext):
@@ -90,8 +92,6 @@ def getmenu(update, context):
   info = update.message
   messages_to_add(info)
 
-url = f"https://api.telegram.org/bot{Token}/sendMessage?chat_id=@BTU_SKS&text=ehe"
-requests.get(url).json()
 
 def sendDaysMenu(context: CallbackContext):
   kayitliKisiListesi = models.check_all()
@@ -110,12 +110,29 @@ def sendDaysMenu(context: CallbackContext):
       print(f"{telegramId} abone olmus ama yetki vermemis")
       eachPerson += 1
 
-
 j.run_daily(sendDaysMenu,
             datetime.time(hour=9,
                           minute=0,
                           tzinfo=pytz.timezone('Europe/Istanbul')),
             days=("mon", "tue", "wed", "thu", "fri"))
+
+
+
+def checkSksContent(context: CallbackContext):
+  ann = sksduyuru.DUYURU("https://sks.btu.edu.tr/tr/duyuru/birim/108")
+  ann.get_first_announcement_link()
+  new_content = ann.check_for_new_content()
+  for content in new_content:
+    text=f"DUYURU \n {content.title} \n {content.publish_date} \n\n Daha fazla bilgi için {content.link}"
+    url = f"https://api.telegram.org/bot{Token}/sendMessage?chat_id=@BTU_SKS&text={text}"
+    requests.get(url).json()
+    ann.get_first_announcement_link()
+
+j.run_daily(checkSksContent,
+            datetime.time(hour=9,
+                          minute=0,
+                          tzinfo=pytz.timezone('Europe/Istanbul')),
+            days=("mon", "tue", "wed", "thu", "fri","sat","sun"))
 
 
 def abonelik(update, context):
