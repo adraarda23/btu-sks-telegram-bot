@@ -24,7 +24,7 @@ except:
   scrape.ScrapeMenu().getPdf()
   scrape.ScrapeMenu().convertPdfToCsv()
   menuList, date = getmenu.Menu().getFormattedMenu()
-Token = "6668916859:AAFHAe4PnuZVyicMhjhD7deEu9RV6xpCYYc"
+Token = "TOKEN"
 
 models = Models()
 models.create_table()
@@ -120,19 +120,19 @@ j.run_daily(sendDaysMenu,
 
 def checkSksContent(context: CallbackContext):
   ann = sksduyuru.DUYURU("https://sks.btu.edu.tr/tr/duyuru/birim/108")
-  ann.get_first_announcement_link()
   new_content = ann.check_for_new_content()
+  print(new_content)
   for content in new_content:
     text=f"DUYURU \n {content.title} \n {content.publish_date} \n\n Daha fazla bilgi için {content.link}"
     url = f"https://api.telegram.org/bot{Token}/sendMessage?chat_id=@BTU_SKS&text={text}"
     requests.get(url).json()
-    ann.get_first_announcement_link()
+  ann.get_first_announcement_link()
 
-j.run_daily(checkSksContent,
-            datetime.time(hour=9,
-                          minute=0,
-                          tzinfo=pytz.timezone('Europe/Istanbul')),
-            days=("mon", "tue", "wed", "thu", "fri","sat","sun"))
+ j.run_daily(checkSksContent,
+             datetime.time(hour=9,
+                           minute=0,
+                           tzinfo=pytz.timezone('Europe/Istanbul')),
+             days=("mon", "tue", "wed", "thu", "fri","sat","sun"))
 
 
 def abonelik(update, context):
