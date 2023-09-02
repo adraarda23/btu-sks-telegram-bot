@@ -40,9 +40,12 @@ class DUYURU:
 
             first_announcement_link = open("first_announcement_link.txt", "r", encoding = "utf-8")
             if link == first_announcement_link.read():
-                 break
+                break
 
             new_content.append(self.Announcement(link, title, publish_date))
+
+        if len(new_content) > 3:
+            new_content = []
         
         return new_content
 
