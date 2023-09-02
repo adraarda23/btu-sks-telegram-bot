@@ -127,7 +127,7 @@ def checkSksContent(context: CallbackContext):
     requests.get(url).json()
   ann.get_first_announcement_link()
 
- j.run_daily(checkSksContent,
+j.run_daily(checkSksContent,
              datetime.time(hour=9,
                            minute=0,
                            tzinfo=pytz.timezone('Europe/Istanbul')),
