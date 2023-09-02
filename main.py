@@ -121,7 +121,6 @@ j.run_daily(sendDaysMenu,
 def checkSksContent(context: CallbackContext):
   ann = sksduyuru.DUYURU("https://sks.btu.edu.tr/tr/duyuru/birim/108")
   new_content = ann.check_for_new_content()
-  print(new_content)
   for content in new_content:
     text=f"DUYURU \n {content.title} \n {content.publish_date} \n\n Daha fazla bilgi için {content.link}"
     url = f"https://api.telegram.org/bot{Token}/sendMessage?chat_id=@BTU_SKS&text={text}"
